@@ -562,3 +562,12 @@ class TestSearchQuality:
         # 摘要太短会丢掉新闻里的关键信息，至少留 500 字
         assert SNIPPET_CHARS >= 500
         assert text.count("字") == SNIPPET_CHARS
+
+
+def test_prompt_asks_for_sources():
+    """搜索出来的结论要能点回去核实，否则用户只能信或不信。"""
+    from fatfish.config import get_settings
+
+    prompt = get_settings().prompt()
+    assert "参考链接" in prompt
+    assert "没有链接的内容不要写成搜索结果" in prompt
