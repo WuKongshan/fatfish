@@ -63,7 +63,9 @@ async def serve() -> None:
         "已配置" if settings.image_api_key else "未配置",
         settings.web_search_provider if settings.web_search_api_key else "未配置",
     )
-    tasks = [asyncio.create_task(bot.run_forever())]
+    tasks: list[asyncio.Task] = []
+    if settings.qq_app_id and settings.qq_app_secret:
+        tasks.append(asyncio.create_task(bot.run_forever()))
     if settings.wechat_token:
         log.info("微信回调已启动，监听 :%s/wechat", settings.wechat_port)
         tasks.append(asyncio.create_task(serve_http()))
@@ -86,17 +88,19 @@ def main() -> None:
     log = logging.getLogger("im_bridge")
 
     settings = get_settings()
-    missing = [
-        name
-        for name, value in (
-            ("QQ_APP_ID", settings.qq_app_id),
-            ("QQ_APP_SECRET", settings.qq_app_secret),
-            ("DEEPSEEK_API_KEY", settings.deepseek_api_key),
-        )
-        if not value
-    ]
+
+    # DeepSeek 是必须的；渠道至少配一个（QQ 或微信），否则起来也没用
+    missing: list[str] = []
+    if not settings.deepseek_api_key:
+        missing.append("DEEPSEEK_API_KEY")
+
+    has_qq = bool(settings.qq_app_id and settings.qq_app_secret)
+    has_wechat = bool(settings.wechat_token and settings.wechat_app_id)
+    if not has_qq and not has_wechat:
+        missing.append("至少一个渠道（QQ_APP_ID+QQ_APP_SECRET 或 WECHAT_TOKEN+WECHAT_APP_ID）")
+
     if missing:
-        log.error("缺少配置：%s（写在 .env 里）", "、".join(missing))
+        log.error("缺少配置：%s", "；".join(missing))
         sys.exit(1)
 
     try:
