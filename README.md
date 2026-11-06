@@ -1,5 +1,8 @@
 # 大肥鱼 · fatfish
 
+[![ci](https://github.com/WuKongshan/fatfish/actions/workflows/ci.yml/badge.svg)](https://github.com/WuKongshan/fatfish/actions/workflows/ci.yml)
+[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 **把 DeepSeek 接到 QQ 和微信。** 一个自带工具的聊天机器人：能聊天、查天气、画图、设提醒、联网搜索。
 
 > 名字来自那条刷屏的「蓝色大肥鱼」——它在 QQ 里替 ChatBot 说话，这里把它搬到了自己的服务器上。
