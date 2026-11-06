@@ -1,7 +1,7 @@
 [project]
-name = "im-bridge"
+name = "fatfish"
 version = "0.1.0"
-description = "把 DeepSeek 接到 QQ 和微信：一个自带工具（天气/生图/提醒/搜索）的聊天机器人"
+description = "大肥鱼 · 把 DeepSeek 接到 QQ 和微信的自带工具机器人"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -27,7 +27,7 @@ dev = [
 ]
 
 [tool.uv]
-# 包就在仓库根目录，运行 `python -m im_bridge.main` 不需要额外安装
+# 包就在仓库根目录，运行 `python -m fatfish.main` 不需要额外安装
 package = false
 
 [tool.pytest.ini_options]

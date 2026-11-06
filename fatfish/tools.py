@@ -14,9 +14,9 @@ from zoneinfo import ZoneInfo
 
 import httpx
 
-from im_bridge import context
-from im_bridge.config import get_settings
-from im_bridge.store import ReminderStore
+from fatfish import context
+from fatfish.config import get_settings
+from fatfish.store import ReminderStore
 
 log = logging.getLogger(__name__)
 

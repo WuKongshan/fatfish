@@ -21,9 +21,9 @@ import httpx
 from fastapi import APIRouter, Query, Request, Response
 from fastapi.responses import PlainTextResponse
 
-from im_bridge import context
-from im_bridge.config import get_settings
-from im_bridge.deepseek import ChatMemory, ask
+from fatfish import context
+from fatfish.config import get_settings
+from fatfish.deepseek import ChatMemory, ask
 
 log = logging.getLogger(__name__)
 

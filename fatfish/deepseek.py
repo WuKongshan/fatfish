@@ -12,8 +12,8 @@ from zoneinfo import ZoneInfo
 
 import httpx
 
-from im_bridge.config import get_settings
-from im_bridge.tools import TOOLS, run_tool
+from fatfish.config import get_settings
+from fatfish.tools import TOOLS, run_tool
 
 # 最多两轮工具调用：查一次天气就够了，
 # 给太多轮会让"模型自己绕圈"变得可能，也让延迟不可控

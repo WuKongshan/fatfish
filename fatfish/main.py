@@ -1,6 +1,6 @@
 """QQ 机器人入口。
 
-    python -m src.im_bridge.main
+    python -m src.fatfish.main
 
 必需配置：QQ_APP_ID / QQ_APP_SECRET / DEEPSEEK_API_KEY。
 可选：IMAGE_API_KEY（生图）、WEB_SEARCH_PROVIDER + WEB_SEARCH_API_KEY（联网搜索）。
@@ -13,19 +13,19 @@ import sys
 import uvicorn
 from fastapi import FastAPI
 
-from im_bridge import scheduler, tools
-from im_bridge.config import get_settings
-from im_bridge.deepseek import ChatMemory
-from im_bridge.push import PushRouter
-from im_bridge.qq import QQBot
-from im_bridge.store import ReminderStore
-from im_bridge.wechat import router as wechat_router
+from fatfish import scheduler, tools
+from fatfish.config import get_settings
+from fatfish.deepseek import ChatMemory
+from fatfish.push import PushRouter
+from fatfish.qq import QQBot
+from fatfish.store import ReminderStore
+from fatfish.wechat import router as wechat_router
 
 
 async def serve_http() -> None:
     """微信公众号的回调服务。没配 WECHAT_TOKEN 时完全不启动，不占 80 端口。"""
     settings = get_settings()
-    app = FastAPI(title="im-bridge", docs_url=None, redoc_url=None)
+    app = FastAPI(title="fatfish", docs_url=None, redoc_url=None)
     app.include_router(wechat_router)
     # access_log=False：80 端口暴露在公网，每天有大量扫描器请求 / 和 /favicon.ico，
     # 访问日志会把真正的业务日志冲掉。微信的请求我们自己打了 "收到微信消息"，
@@ -43,7 +43,7 @@ async def serve_http() -> None:
 
 
 async def serve() -> None:
-    log = logging.getLogger("im_bridge")
+    log = logging.getLogger("fatfish")
     settings = get_settings()
 
     store = ReminderStore(settings.reminder_db)
@@ -85,7 +85,7 @@ def main() -> None:
         format="%(asctime)s %(levelname)-7s %(name)s: %(message)s",
         datefmt="%H:%M:%S",
     )
-    log = logging.getLogger("im_bridge")
+    log = logging.getLogger("fatfish")
 
     settings = get_settings()
 

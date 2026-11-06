@@ -20,7 +20,7 @@ class PushRouter:
     async def send_proactive(self, text: str, *, target: str, target_id: str) -> bool:
         if target == WECHAT:
             # 延迟导入：wechat 模块依赖 fastapi，QQ-only 部署时不必加载
-            from im_bridge.wechat import push_text
+            from fatfish.wechat import push_text
 
             return await push_text(target_id, text)
         return await self.bot.send_proactive(text, target=target, target_id=target_id)

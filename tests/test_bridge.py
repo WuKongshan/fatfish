@@ -8,8 +8,8 @@ from datetime import UTC, datetime, timedelta
 
 import pytest
 
-from im_bridge.deepseek import ChatMemory
-from im_bridge.qq import MAX_REPLIES, clean_text, split_chunks
+from fatfish.deepseek import ChatMemory
+from fatfish.qq import MAX_REPLIES, clean_text, split_chunks
 
 
 class TestCleanText:
@@ -79,19 +79,19 @@ class TestChatMemory:
 
 class TestWeather:
     def test_describe_known_code(self):
-        from im_bridge.tools import describe
+        from fatfish.tools import describe
 
         assert describe(0) == "晴"
         assert describe(61) == "小雨"
 
     def test_describe_unknown(self):
-        from im_bridge.tools import describe
+        from fatfish.tools import describe
 
         assert describe(None) == "未知"
         assert "999" in describe(999)
 
     def test_format_includes_numbers(self):
-        from im_bridge.tools import format_weather
+        from fatfish.tools import format_weather
 
         text = format_weather(
             {"name": "杭州", "admin1": "浙江"},
@@ -116,20 +116,20 @@ class TestWeather:
         assert "11%" in text
 
     def test_format_tolerates_missing_fields(self):
-        from im_bridge.tools import format_weather
+        from fatfish.tools import format_weather
 
         # 接口偶尔少字段，不能因此抛异常让整轮对话挂掉
         assert format_weather({"name": "某地"}, {}) == "某地当前：未知"
 
 
 async def test_run_tool_unknown():
-    from im_bridge.tools import run_tool
+    from fatfish.tools import run_tool
 
     assert "没有叫" in await run_tool("delete_everything", {})
 
 
 async def test_run_tool_bad_args():
-    from im_bridge.tools import run_tool
+    from fatfish.tools import run_tool
 
     # 模型传了多余字段时不能崩，给一句可继续对话的话
     assert "参数不对" in await run_tool("get_weather", {"city": "杭州", "when": "明天"})
@@ -140,8 +140,8 @@ class TestReminders:
 
     @pytest.fixture
     def store(self, tmp_path):
-        from im_bridge import context, tools
-        from im_bridge.store import ReminderStore
+        from fatfish import context, tools
+        from fatfish.store import ReminderStore
 
         s = ReminderStore(str(tmp_path / "bot.db"))
         tools.init_store(s)
@@ -149,38 +149,38 @@ class TestReminders:
         return s
 
     async def test_past_time_rejected(self, store):
-        from im_bridge.tools import set_reminder
+        from fatfish.tools import set_reminder
 
         msg = await set_reminder("喝水", "2020-01-01T10:00:00+08:00")
         assert "已经过去" in msg
         assert store.pending_of("users:abc") == []
 
     async def test_too_far_rejected(self, store):
-        from im_bridge.tools import set_reminder
+        from fatfish.tools import set_reminder
 
         msg = await set_reminder("喝水", "2030-01-01T10:00:00+08:00")
         assert "太远" in msg
 
     async def test_bad_format_rejected(self, store):
-        from im_bridge.tools import set_reminder
+        from fatfish.tools import set_reminder
 
         assert "没解析出来" in await set_reminder("喝水", "明天下午")
 
     async def test_naive_time_uses_local_tz(self):
-        from im_bridge.tools import parse_due
+        from fatfish.tools import parse_due
 
         # 不带时区不能按 UTC 猜，否则提醒会差 8 小时
         assert parse_due("2026-11-05T10:00:00").utcoffset().total_seconds() == 8 * 3600
 
     async def test_valid_reminder_saved(self, store):
-        from im_bridge.tools import set_reminder
+        from fatfish.tools import set_reminder
 
         due = (datetime.now(UTC) + timedelta(minutes=30)).isoformat()
         assert "记住了" in await set_reminder("喝水", due)
         assert len(store.pending_of("users:abc")) == 1
 
     async def test_scheduler_sends_and_marks(self, store):
-        from im_bridge import scheduler
+        from fatfish import scheduler
 
         due = (datetime.now(UTC) - timedelta(seconds=5)).isoformat()
         store.add(
@@ -193,7 +193,7 @@ class TestReminders:
         assert store.due() == []  # 已标记
 
     async def test_scheduler_retries_on_failure(self, store):
-        from im_bridge import scheduler
+        from fatfish import scheduler
 
         due = (datetime.now(UTC) - timedelta(seconds=5)).isoformat()
         store.add(
@@ -206,7 +206,7 @@ class TestReminders:
         assert len(store.due()) == 1
 
     async def test_stale_reminder_skipped_without_sending(self, store):
-        from im_bridge import scheduler
+        from fatfish import scheduler
 
         due = (datetime.now(UTC) - timedelta(hours=48)).isoformat()
         store.add(
@@ -239,8 +239,8 @@ class TestImageProvider:
     """生图适配层：换家只改配置，不动代码。"""
 
     def test_zhipu_defaults(self, monkeypatch):
-        from im_bridge.config import get_settings
-        from im_bridge.tools import image_conf
+        from fatfish.config import get_settings
+        from fatfish.tools import image_conf
 
         s = get_settings()
         monkeypatch.setattr(s, "image_provider", "zhipu")
@@ -254,8 +254,8 @@ class TestImageProvider:
         assert conf["size_field"] == "size"
 
     def test_siliconflow_defaults(self, monkeypatch):
-        from im_bridge.config import get_settings
-        from im_bridge.tools import image_conf
+        from fatfish.config import get_settings
+        from fatfish.tools import image_conf
 
         s = get_settings()
         monkeypatch.setattr(s, "image_provider", "siliconflow")
@@ -267,8 +267,8 @@ class TestImageProvider:
         assert conf["size_field"] == "image_size"
 
     def test_env_overrides_preset(self, monkeypatch):
-        from im_bridge.config import get_settings
-        from im_bridge.tools import image_conf
+        from fatfish.config import get_settings
+        from fatfish.tools import image_conf
 
         s = get_settings()
         monkeypatch.setattr(s, "image_provider", "zhipu")
@@ -281,17 +281,17 @@ class TestImageProvider:
         assert conf["url"] == "https://example.com/v4/images/generations"
 
     def test_extract_zhipu_shape(self):
-        from im_bridge.tools import extract_image_url
+        from fatfish.tools import extract_image_url
 
         assert extract_image_url({"data": [{"url": "https://a/1.png"}]}) == "https://a/1.png"
 
     def test_extract_siliconflow_shape(self):
-        from im_bridge.tools import extract_image_url
+        from fatfish.tools import extract_image_url
 
         assert extract_image_url({"images": [{"url": "https://b/2.png"}]}) == "https://b/2.png"
 
     def test_extract_garbage(self):
-        from im_bridge.tools import extract_image_url
+        from fatfish.tools import extract_image_url
 
         assert extract_image_url({"error": "quota"}) is None
         assert extract_image_url({"data": []}) is None
@@ -299,8 +299,8 @@ class TestImageProvider:
 
 def test_ark_requires_explicit_model(monkeypatch):
     """火山方舟的模型 ID 每个账号不同，不能瞎给默认值。"""
-    from im_bridge.config import get_settings
-    from im_bridge.tools import image_conf
+    from fatfish.config import get_settings
+    from fatfish.tools import image_conf
 
     s = get_settings()
     monkeypatch.setattr(s, "image_provider", "ark")
@@ -315,12 +315,12 @@ class TestFinalText:
     """模型哑火时不能把 null 发给用户——这是线上真实出现过的。"""
 
     def test_normal_answer_passthrough(self):
-        from im_bridge.deepseek import final_text
+        from fatfish.deepseek import final_text
 
         assert final_text("好的", []) == "好的"
 
     def test_null_string_falls_back_to_tool_output(self):
-        from im_bridge.deepseek import final_text
+        from fatfish.deepseek import final_text
 
         # 用户实际看到的 bug：模型返回字面量 "null"
         assert final_text("null", ["记住了：11月05日 21:26 提醒你喝水"]) == (
@@ -328,22 +328,22 @@ class TestFinalText:
         )
 
     def test_none_falls_back_to_tool_output(self):
-        from im_bridge.deepseek import final_text
+        from fatfish.deepseek import final_text
 
         assert final_text(None, ["图片已生成"]) == "图片已生成"
 
     def test_empty_without_tools_uses_generic(self):
-        from im_bridge.deepseek import final_text
+        from fatfish.deepseek import final_text
 
         assert final_text("", []) == "我没想出怎么回，换个说法？"
 
     def test_last_tool_output_wins(self):
-        from im_bridge.deepseek import final_text
+        from fatfish.deepseek import final_text
 
         assert final_text("null", ["第一条", "第二条"]) == "第二条"
 
     def test_assistant_message_is_trimmed(self):
-        from im_bridge.deepseek import _as_assistant
+        from fatfish.deepseek import _as_assistant
 
         cleaned = _as_assistant(
             {
@@ -359,7 +359,7 @@ class TestFinalText:
         assert cleaned["tool_calls"][0]["id"] == "1"
 
     def test_assistant_without_tool_calls(self):
-        from im_bridge.deepseek import _as_assistant
+        from fatfish.deepseek import _as_assistant
 
         cleaned = _as_assistant({"role": "assistant", "content": "hi"})
         assert cleaned == {"role": "assistant", "content": "hi"}
@@ -372,7 +372,7 @@ class TestTimeAwareness:
         from datetime import datetime
         from zoneinfo import ZoneInfo
 
-        from im_bridge.config import get_settings
+        from fatfish.config import get_settings
 
         now = datetime(2026, 11, 5, 20, 29, tzinfo=ZoneInfo("Asia/Shanghai"))
         prompt = get_settings().prompt(now)
@@ -383,14 +383,14 @@ class TestTimeAwareness:
         assert "不要向用户索要当前时间" in prompt
 
     def test_prompt_without_time_still_works(self):
-        from im_bridge.config import get_settings
+        from fatfish.config import get_settings
 
         # 不传时间时不该崩，也不该在末尾拼出半截时间戳
         # （基础提示里本来就有"看下面的【当前时间】"这句指令，所以只查最后一行）
         assert not get_settings().prompt().splitlines()[-1].startswith("【当前时间】")
 
     async def test_time_tool(self):
-        from im_bridge.tools import get_current_time
+        from fatfish.tools import get_current_time
 
         text = await get_current_time()
         assert text.startswith("现在是")
@@ -400,7 +400,7 @@ class TestTimeAwareness:
         from datetime import datetime
         from zoneinfo import ZoneInfo
 
-        from im_bridge.tools import format_now
+        from fatfish.tools import format_now
 
         moment = datetime(2026, 1, 1, 9, 5, tzinfo=ZoneInfo("Asia/Shanghai"))
         assert "2026-01-01 09:05" in format_now(moment)
@@ -413,7 +413,7 @@ class TestWechat:
     def test_signature_ok(self):
         import hashlib
 
-        from im_bridge.wechat import check_signature
+        from fatfish.wechat import check_signature
 
         token, ts, nonce = "dafeiyu", "1730000000", "abc123"
         sig = hashlib.sha1("".join(sorted([token, ts, nonce])).encode()).hexdigest()
@@ -423,14 +423,14 @@ class TestWechat:
     def test_signature_rejects_wrong_token(self):
         import hashlib
 
-        from im_bridge.wechat import check_signature
+        from fatfish.wechat import check_signature
 
         sig = hashlib.sha1("".join(sorted(["t1", "1", "n"])).encode()).hexdigest()
         # token 不同就必须判失败，否则谁都能伪造消息
         assert check_signature("t2", "1", "n", sig) is False
 
     def test_parse_text_message(self):
-        from im_bridge.wechat import parse_message
+        from fatfish.wechat import parse_message
 
         xml = """<xml>
             <ToUserName><![CDATA[gh_abc]]></ToUserName>
@@ -447,14 +447,14 @@ class TestWechat:
         assert msg["MsgType"] == "text"
 
     def test_parse_broken_xml_returns_empty(self):
-        from im_bridge.wechat import parse_message
+        from fatfish.wechat import parse_message
 
         assert parse_message(b"not xml at all") == {}
 
     def test_reply_is_valid_xml(self):
         import xml.etree.ElementTree as ET
 
-        from im_bridge.wechat import build_text_reply
+        from fatfish.wechat import build_text_reply
 
         text = build_text_reply("oUser", "gh_abc", "收到")
         root = ET.fromstring(text)
@@ -462,7 +462,7 @@ class TestWechat:
         assert root.findtext("Content") == "收到"
 
     def test_duplicate_msgid_detected(self):
-        from im_bridge.wechat import is_duplicate
+        from fatfish.wechat import is_duplicate
 
         assert is_duplicate("msg-1") is False
         # 微信 5 秒没响应会重发同一条，必须认出来
@@ -477,8 +477,8 @@ async def test_reminder_text_uses_configured_timezone(tmp_path):
     """
     from zoneinfo import ZoneInfo
 
-    from im_bridge import context, scheduler, tools
-    from im_bridge.store import ReminderStore
+    from fatfish import context, scheduler, tools
+    from fatfish.store import ReminderStore
 
     store = ReminderStore(str(tmp_path / "bot.db"))
     tools.init_store(store)
@@ -505,7 +505,7 @@ class TestPushRouter:
     """调度器只认 send_proactive，具体走哪个渠道由 router 决定。"""
 
     async def test_routes_wechat(self, monkeypatch):
-        from im_bridge.push import PushRouter
+        from fatfish.push import PushRouter
 
         calls: list[tuple] = []
 
@@ -513,13 +513,13 @@ class TestPushRouter:
             calls.append(("wechat", openid, content))
             return True
 
-        monkeypatch.setattr("im_bridge.wechat.push_text", fake_push_text)
+        monkeypatch.setattr("fatfish.wechat.push_text", fake_push_text)
         router = PushRouter(_FakeQQBot())
         assert await router.send_proactive("喝水", target="wechat", target_id="oX") is True
         assert calls == [("wechat", "oX", "喝水")]
 
     async def test_routes_qq(self):
-        from im_bridge.push import PushRouter
+        from fatfish.push import PushRouter
 
         bot = _FakeQQBot()
         router = PushRouter(bot)

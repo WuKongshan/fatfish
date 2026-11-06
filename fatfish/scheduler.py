@@ -13,9 +13,9 @@ import logging
 from datetime import UTC, datetime
 from zoneinfo import ZoneInfo
 
-from im_bridge.config import get_settings
-from im_bridge.store import ReminderStore
-from im_bridge.tools import parse_due
+from fatfish.config import get_settings
+from fatfish.store import ReminderStore
+from fatfish.tools import parse_due
 
 log = logging.getLogger(__name__)
 

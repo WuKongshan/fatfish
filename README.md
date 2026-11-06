@@ -1,11 +1,13 @@
-# im-bridge
+# 大肥鱼 · fatfish
 
 **把 DeepSeek 接到 QQ 和微信。** 一个自带工具的聊天机器人：能聊天、查天气、画图、设提醒、联网搜索。
+
+> 名字来自那条刷屏的「蓝色大肥鱼」——它在 QQ 里替 ChatBot 说话，这里把它搬到了自己的服务器上。
 
 ```
 QQ 私聊 / QQ 群 / 微信公众号
             ↓
-       im-bridge（本仓库）
+       fatfish（本仓库）
             ↓
    DeepSeek + 工具（天气 / 生图 / 搜索 / 提醒）
 ```
@@ -37,15 +39,15 @@ docker compose logs -f
 ```bash
 uv sync
 cp .env.example .env
-uv run python -m im_bridge.main
+uv run python -m fatfish.main
 ```
 
 看日志出现这几行就说明起来了：
 
 ```
-INFO  im_bridge: 大肥鱼 启动（生图 已配置，联网搜索 未配置）
-INFO  im_bridge.qq: 已获取 access_token（7200 秒有效）
-INFO  im_bridge.wechat: 微信回调已启动，监听 :80/wechat
+INFO  fatfish: 大肥鱼 启动（生图 已配置，联网搜索 未配置）
+INFO  fatfish.qq: 已获取 access_token（7200 秒有效）
+INFO  fatfish.wechat: 微信回调已启动，监听 :80/wechat
 ```
 
 ## 配置
@@ -66,7 +68,7 @@ INFO  im_bridge.wechat: 微信回调已启动，监听 :80/wechat
 
 ## 加一个工具
 
-三步，都在 `im_bridge/tools.py`：
+三步，都在 `fatfish/tools.py`：
 
 ```python
 # 1. 写 handler（必须返回字符串，不能抛异常）
@@ -98,7 +100,7 @@ HANDLERS["get_crypto_price"] = get_crypto_price
 ## 目录
 
 ```
-im_bridge/
+fatfish/
 ├── main.py        入口：QQ 长连接 + 微信 HTTP + 提醒调度
 ├── qq.py          QQ 协议（鉴权、心跳、事件、富媒体）
 ├── wechat.py      公众号回调（验签、XML、客服消息）

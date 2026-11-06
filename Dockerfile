@@ -17,9 +17,9 @@ WORKDIR /app
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-dev
 
-COPY im_bridge ./im_bridge
+COPY fatfish ./fatfish
 
 EXPOSE 80
 
 # 长连接（QQ）+ HTTP 回调（微信）跑在同一个进程里
-CMD ["python", "-m", "im_bridge.main"]
+CMD ["python", "-m", "fatfish.main"]
