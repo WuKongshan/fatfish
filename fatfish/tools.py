@@ -75,10 +75,28 @@ TOOLS = [
         "type": "function",
         "function": {
             "name": "web_search",
-            "description": "联网搜索。问新闻、实时信息、或你不确定的事实时调用。",
+            "description": (
+                "联网搜索。问新闻、实时信息、或你不确定的事实时调用。"
+                "query 必须是**关键词组合**，不要把用户的口语原句丢进来："
+                "用户问「今天有什么科技新闻」，应该搜「科技新闻 2026年11月」。"
+                "问题涉及时效性时设置 freshness。"
+            ),
             "parameters": {
                 "type": "object",
-                "properties": {"query": {"type": "string", "description": "搜索关键词"}},
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "关键词组合，空格分隔，别用问句",
+                    },
+                    "freshness": {
+                        "type": "string",
+                        "enum": ["noLimit", "oneDay", "oneWeek", "oneMonth"],
+                        "description": (
+                            "时间范围。问「今天/最新」用 oneDay，"
+                            "「这周」用 oneWeek，不涉及时效就不填"
+                        ),
+                    },
+                },
                 "required": ["query"],
             },
         },
@@ -119,6 +137,13 @@ TOOLS = [
         },
     },
 ]
+
+# 条数给多一点：口语问题关键词命中率低，靠广度补
+MAX_RESULTS = 8
+# 摘要太短会丢关键信息（新闻类尤其明显）
+SNIPPET_CHARS = 500
+# 博查支持的时间范围，白名单防止模型瞎传
+FRESHNESS = {"noLimit", "oneDay", "oneWeek", "oneMonth"}
 
 _STORE: ReminderStore | None = None
 
@@ -218,12 +243,12 @@ def format_search(results: list[dict]) -> str:
         return "没有搜到相关结果。"
     lines = []
     for i, item in enumerate(results, start=1):
-        snippet = (item.get("snippet") or "")[:300]
+        snippet = (item.get("snippet") or "")[:SNIPPET_CHARS]
         lines.append(f"[{i}] {item.get('title', '')}\n{snippet}\n来源：{item.get('url', '')}")
     return "\n\n".join(lines)
 
 
-async def web_search(query: str) -> str:
+async def web_search(query: str, freshness: str = "noLimit") -> str:
     settings = get_settings()
     if settings.web_search_provider == "off" or not settings.web_search_api_key:
         return "搜索服务没配置，只好靠我自己的知识回答，可能不准。"
@@ -236,7 +261,7 @@ async def web_search(query: str) -> str:
                     json={
                         "api_key": settings.web_search_api_key,
                         "query": query,
-                        "max_results": 4,
+                        "max_results": MAX_RESULTS,
                         "search_depth": "basic",
                     },
                 )
@@ -244,7 +269,13 @@ async def web_search(query: str) -> str:
                 resp = await client.post(
                     BOCHA_URL,
                     headers={"Authorization": f"Bearer {settings.web_search_api_key}"},
-                    json={"query": query, "count": 4, "summary": True},
+                    json={
+                        "query": query,
+                        "count": MAX_RESULTS,
+                        "summary": True,
+                        # 博查支持 noLimit / oneDay / oneWeek / oneMonth
+                        "freshness": freshness if freshness in FRESHNESS else "noLimit",
+                    },
                 )
             resp.raise_for_status()
             data = resp.json()

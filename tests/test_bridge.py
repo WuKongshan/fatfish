@@ -534,3 +534,31 @@ class _FakeQQBot:
     async def send_proactive(self, text: str, *, target: str, target_id: str) -> bool:
         self.sent.append((target, target_id, text))
         return True
+
+
+class TestSearchQuality:
+    """搜索质量：口语问句直接丢给搜索引擎等于白搜。"""
+
+    def test_tool_schema_demands_keywords(self):
+        from fatfish.tools import TOOLS
+
+        search = next(t for t in TOOLS if t["function"]["name"] == "web_search")
+        desc = search["function"]["description"]
+        # 描述里必须明确要求关键词组合，否则模型会原样转发用户的话
+        assert "关键词" in desc
+        assert "别用问句" in search["function"]["parameters"]["properties"]["query"]["description"]
+
+    def test_freshness_enum_limited(self):
+        from fatfish.tools import TOOLS
+
+        search = next(t for t in TOOLS if t["function"]["name"] == "web_search")
+        enum = search["function"]["parameters"]["properties"]["freshness"]["enum"]
+        assert enum == ["noLimit", "oneDay", "oneWeek", "oneMonth"]
+
+    def test_snippet_not_truncated_too_short(self):
+        from fatfish.tools import SNIPPET_CHARS, format_search
+
+        text = format_search([{"title": "t", "url": "u", "snippet": "字" * 800}])
+        # 摘要太短会丢掉新闻里的关键信息，至少留 500 字
+        assert SNIPPET_CHARS >= 500
+        assert len(text) > 600
