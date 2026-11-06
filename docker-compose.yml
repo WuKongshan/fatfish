@@ -1,0 +1,23 @@
+#   docker compose up -d --build
+#   docker compose logs -f
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # 日志时间戳用本地时间，排查时不用心算 +8
+      TZ: Asia/Shanghai
+    ports:
+      # 只有用微信时才需要；只用 QQ 可以注释掉
+      - "80:80"
+    volumes:
+      # 提醒存在 SQLite 里，不挂出来重建容器就丢
+      - ./bot-data:/app/data
+    mem_limit: 300m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
