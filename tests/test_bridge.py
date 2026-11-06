@@ -561,4 +561,4 @@ class TestSearchQuality:
         text = format_search([{"title": "t", "url": "u", "snippet": "字" * 800}])
         # 摘要太短会丢掉新闻里的关键信息，至少留 500 字
         assert SNIPPET_CHARS >= 500
-        assert len(text) > 600
+        assert text.count("字") == SNIPPET_CHARS
