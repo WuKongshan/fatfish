@@ -1,8 +1,9 @@
-.venv/
-__pycache__/
 *.py[cod]
 .env
 .env.bak
-bot-data/
 .pytest_cache/
 .ruff_cache/
+.venv/
+__pycache__/
+bot-data/
+data/
