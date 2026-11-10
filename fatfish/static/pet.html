@@ -2,32 +2,75 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#e8f8ff"><title>大肥鱼桌宠</title>
+  <meta name="theme-color" content="#eaf5ff"><title>大肥鱼与龙娘桌宠</title>
   <style>
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 15%,#fff 0,#eaf9ff 50%,#cceeff 100%);font:16px system-ui,"Microsoft YaHei",sans-serif;color:#17364a;display:grid;place-items:center}
-    main{width:min(760px,94vw);min-height:90vh;display:flex;flex-direction:column;align-items:center;padding:28px 16px 20px}.brand{font-size:24px;font-weight:800}.sub{color:#638196;margin:4px 0 12px}.fish{width:min(300px,72vw);height:210px;filter:drop-shadow(0 16px 12px #5794ad33);animation:bob 3s ease-in-out infinite;transition:transform .2s}.fish.think{animation:wobble .35s infinite alternate}.bubble{min-height:30px;color:#28718c;font-weight:700}.fish:hover{transform:scale(1.04)}
-    @keyframes bob{50%{translate:0 -9px}}@keyframes wobble{to{rotate:3deg}}
-    .chat{width:min(620px,100%);background:#ffffffb8;border:1px solid #d4edf7;border-radius:20px;padding:14px;box-shadow:0 12px 40px #3b77901a}.messages{height:240px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:3px}.msg{max-width:88%;padding:10px 13px;border-radius:15px;white-space:pre-wrap;line-height:1.5}.user{align-self:flex-end;background:#bcecff}.bot{align-self:flex-start;background:#fff}.row{display:flex;gap:8px;margin-top:10px}input{min-width:0;flex:1;border:1px solid #cde3ec;border-radius:12px;padding:12px;font:inherit}button{border:0;border-radius:12px;background:#1886ab;color:white;padding:0 18px;font:inherit;font-weight:700;cursor:pointer}button:disabled{opacity:.5}.login{position:fixed;inset:0;background:#eaf9ff;display:grid;place-items:center}.login[hidden]{display:none}.login form{background:white;border-radius:18px;padding:26px;box-shadow:0 12px 40px #3b77901a;display:grid;gap:12px;width:min(360px,90vw)}.login h2{margin:0}.error{color:#b43d48;min-height:22px}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#eaf4ff;font:16px system-ui,"Microsoft YaHei",sans-serif;color:#26394f;display:grid;place-items:center}
+    main{width:min(900px,96vw);min-height:90vh;display:flex;flex-direction:column;align-items:center;padding:24px 14px 20px}.brand{font-size:24px;font-weight:800}.sub{color:#718096;margin:4px 0 12px}.stage{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:14px}.character-card{min-width:0;text-align:center;border:3px solid #fff;border-radius:18px;overflow:hidden;box-shadow:0 8px 24px #27415b22}.character-card.fish-card{background-color:#d9f1ff;background-image:linear-gradient(45deg,#c4e9ff 25%,transparent 25%),linear-gradient(-45deg,#c4e9ff 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#c4e9ff 75%),linear-gradient(-45deg,transparent 75%,#c4e9ff 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0}.character-card.dragon-card{background-color:#f1e7ff;background-image:linear-gradient(45deg,#e7d9ff 25%,transparent 25%),linear-gradient(-45deg,#e7d9ff 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e7d9ff 75%),linear-gradient(-45deg,transparent 75%,#e7d9ff 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0}.character-name{margin:9px 0 0;font-weight:800}.character{width:100%;height:230px;filter:drop-shadow(0 12px 8px #31446033);animation:bob 3s ease-in-out infinite;transform-origin:50% 85%;cursor:pointer;touch-action:manipulation}.character.think{animation:think .3s infinite alternate}.character.poked{animation:poked .48s ease}.character.talk{animation:talk .32s infinite alternate}@keyframes bob{50%{translate:0 -8px}}@keyframes think{to{rotate:3deg;translate:3px 0}}@keyframes poked{0%,100%{rotate:0;scale:1}20%{rotate:-12deg;scale:1.08 .92}55%{rotate:9deg;scale:.95 1.08}}@keyframes talk{to{translate:0 -3px;scale:1.015}}
+    .bubble{min-height:28px;color:#516b88;font-weight:700}.poke{margin:1px 0 10px;border:1px solid #ccd9e8;border-radius:999px;background:#fff;color:#4a6380;padding:6px 13px;font-size:14px;cursor:pointer}.poke:hover{background:#f7fbff}
+    .chat{width:min(620px,100%);background:#ffffffc9;border:1px solid #e2d6f4;border-radius:20px;padding:14px;box-shadow:0 12px 40px #69518b18}.messages{height:240px;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:3px}.msg{max-width:88%;padding:10px 13px;border-radius:15px;white-space:pre-wrap;line-height:1.5}.user{align-self:flex-end;background:#e8ddff}.bot{align-self:flex-start;background:#fff}.row{display:flex;gap:8px;margin-top:10px}input{min-width:0;flex:1;border:1px solid #ddd0ef;border-radius:12px;padding:12px;font:inherit}button{border:0;border-radius:12px;background:#8055b5;color:white;padding:0 18px;font:inherit;font-weight:700;cursor:pointer}button:disabled{opacity:.5}.login{position:fixed;inset:0;background:#f5efff;display:grid;place-items:center}.login[hidden]{display:none}.login form{background:white;border-radius:18px;padding:26px;box-shadow:0 12px 40px #69518b18;display:grid;gap:12px;width:min(360px,90vw)}.login h2{margin:0}.error{color:#b43d48;min-height:22px}
   </style>
 </head>
 <body>
-<main><div class="brand">大肥鱼</div><div class="sub">你的网页桌宠 · 有什么想聊的？</div>
-<svg class="fish" id="fish" viewBox="0 0 320 220" role="img" aria-label="蓝色大肥鱼">
- <defs><linearGradient id="body" x1="0" y1="0" x2="0.8" y2="1"><stop stop-color="#83e5ff"/><stop offset="1" stop-color="#27a9df"/></linearGradient></defs>
- <path d="M66 110 17 65q-8-8-9 4l-2 39 2 40q1 12 9 4l49-42" fill="#188fca" stroke="#147eae" stroke-width="5"/>
- <ellipse cx="160" cy="110" rx="112" ry="74" fill="url(#body)" stroke="#1688b8" stroke-width="5"/>
- <path d="M117 43Q151 4 184 38M126 179q35 35 65-2" fill="#49c5ed" stroke="#1688b8" stroke-width="5"/>
- <path d="M83 85q28 22 0 48M101 75q27 34 0 68" fill="none" stroke="#b5f1ff" stroke-width="4" opacity=".8"/>
- <ellipse cx="205" cy="91" rx="14" ry="18" fill="white"/><ellipse cx="210" cy="94" rx="6" ry="9" fill="#143a57"/><circle cx="212" cy="90" r="2.5" fill="white"/>
- <path d="M230 120q17 13 31 0" fill="none" stroke="#145879" stroke-width="4" stroke-linecap="round"/><circle cx="183" cy="113" r="8" fill="#ff9eae" opacity=".7"/>
-</svg><div class="bubble" id="bubble">点点我，陪我聊聊天吧！</div>
-<section class="chat"><div class="messages" id="messages"><div class="msg bot">你好呀，我是大肥鱼 🐟</div></div><form class="row" id="chat"><input id="message" maxlength="2000" placeholder="和大肥鱼说点什么…" autocomplete="off"><button>发送</button></form></section></main>
-<div class="login" id="login"><form id="loginForm"><h2>大肥鱼在等你</h2><div>输入网页访问口令</div><input id="password" type="password" maxlength="256" required><button>进入</button><div class="error" id="error"></div></form></div>
+<main><div class="brand">双人桌宠</div><div class="sub">DeepSeek 大肥鱼 · GPT 龙娘 · 点点角色和它们互动</div>
+<div class="stage">
+<section class="character-card fish-card"><div class="character-name">DeepSeek · 大肥鱼</div>
+<svg class="character" id="fish" viewBox="0 0 260 240" role="img" aria-label="Q版蓝色大肥鱼桌宠">
+ <defs><linearGradient id="fishBody" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#7edcff"/><stop offset="1" stop-color="#1689d0"/></linearGradient></defs>
+ <path d="M66 119 22 75q-12-10-13 5l-3 37 3 38q1 13 13 4l44-39" fill="#147bbd" stroke="#075a9c" stroke-width="5"/>
+ <path d="M83 78Q74 44 91 31q9 24 30 29M172 77q19-33 42-28-10 24-28 39" fill="#5bbce8" stroke="#126da9" stroke-width="5" stroke-linejoin="round"/>
+ <ellipse cx="132" cy="120" rx="91" ry="69" fill="url(#fishBody)" stroke="#075a9c" stroke-width="5"/>
+ <path d="M104 174q28 25 57-1" fill="#f5fbff" stroke="#8ecce9" stroke-width="3"/>
+ <path d="M78 96q21 23 0 47M92 87q22 31 1 62" fill="none" stroke="#c1f1ff" stroke-width="4" opacity=".8"/>
+ <ellipse cx="158" cy="105" rx="14" ry="19" fill="white"/><ellipse cx="163" cy="109" rx="7" ry="12" fill="#123c68"/><circle cx="164" cy="103" r="4" fill="white"/>
+ <path d="M183 137q15 13 28-1" fill="none" stroke="#064c7b" stroke-width="4" stroke-linecap="round"/><ellipse cx="139" cy="132" rx="9" ry="5" fill="#ff9bb0"/>
+</svg><div class="bubble" id="fishBubble">咕噜！今天也要元气满满～</div><button class="poke" type="button" data-poke="fish">戳戳大肥鱼</button></section>
+<section class="character-card dragon-card"><div class="character-name">GPT · 龙娘</div>
+<svg class="character" id="dragon" viewBox="0 0 260 300" role="img" aria-label="Q版紫发龙娘桌宠">
+ <defs>
+  <linearGradient id="hair" x1=".1" y1="0" x2=".85" y2="1"><stop stop-color="#c6a8ff"/><stop offset="1" stop-color="#8063d2"/></linearGradient>
+  <linearGradient id="coat" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#e9e2ff"/></linearGradient>
+  <linearGradient id="horn" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffe9a6"/><stop offset="1" stop-color="#e9a952"/></linearGradient>
+ </defs>
+ <!-- curled dragon tail -->
+ <path d="M176 218q55 8 47 43-6 22-31 8 23-2 16-17-6-13-31-7" fill="#9b83e8" stroke="#7259bf" stroke-width="4" stroke-linejoin="round"/>
+ <path d="m205 246 21-8-7 18z" fill="#ffd979"/>
+ <!-- tiny body and cape -->
+ <path d="M93 188q-30 12-28 58l12 24q53 19 105-1l11-22q-2-43-31-59" fill="#b6a0f2" stroke="#7259bf" stroke-width="4" stroke-linejoin="round"/>
+ <path d="M99 193q31 19 62 0l22 67q-51 19-104 0z" fill="url(#coat)" stroke="#c5b7ed" stroke-width="4" stroke-linejoin="round"/>
+ <path d="m122 205 10 13 10-13-10-8z" fill="#f0a1c8"/><path d="m132 218-7 9 7 9 7-9z" fill="#8a6bd0"/>
+ <!-- arms -->
+ <path d="M83 211q-21 5-20 23 3 15 20 9M177 210q21 7 18 24-3 14-19 9" fill="none" stroke="#f1c8bd" stroke-width="13" stroke-linecap="round"/>
+ <circle cx="82" cy="243" r="10" fill="#ffe0d5"/><circle cx="178" cy="243" r="10" fill="#ffe0d5"/>
+ <!-- dragon horns -->
+ <path d="M82 86Q48 75 58 42q9 17 29 18M177 82q33-17 26-44-12 16-30 22" fill="url(#horn)" stroke="#bd8545" stroke-width="4" stroke-linejoin="round"/>
+ <!-- hair silhouette and side locks -->
+ <path d="M62 126Q43 69 79 43q37-31 80-6 40 23 30 88l-9 70-29-21H98l-27 24z" fill="url(#hair)" stroke="#644caa" stroke-width="4" stroke-linejoin="round"/>
+ <path d="M75 135q-22 40-5 71 16-13 21-46M177 133q23 35 8 70-18-12-20-47" fill="#9679df" stroke="#644caa" stroke-width="4" stroke-linejoin="round"/>
+ <!-- face -->
+ <ellipse cx="130" cy="117" rx="51" ry="58" fill="#ffe0d1" stroke="#ad7891" stroke-width="3"/>
+ <path d="M79 100q8-51 51-48 39 1 51 43-29-8-42-33-18 27-60 38" fill="url(#hair)"/>
+ <path d="M115 73q15 25 35 27" fill="none" stroke="#d6c5ff" stroke-width="6" stroke-linecap="round"/>
+ <!-- big violet eyes -->
+ <ellipse cx="109" cy="119" rx="11" ry="16" fill="#fff"/><ellipse cx="151" cy="119" rx="11" ry="16" fill="#fff"/>
+ <ellipse cx="111" cy="122" rx="7" ry="12" fill="#7654c6"/><ellipse cx="149" cy="122" rx="7" ry="12" fill="#7654c6"/>
+ <ellipse cx="112" cy="125" rx="3" ry="6" fill="#38264e"/><ellipse cx="148" cy="125" rx="3" ry="6" fill="#38264e"/>
+ <circle cx="108" cy="115" r="3" fill="white"/><circle cx="146" cy="115" r="3" fill="white"/>
+ <path d="M122 145q8 8 16 0" fill="none" stroke="#a95e76" stroke-width="3" stroke-linecap="round"/>
+ <ellipse cx="92" cy="139" rx="9" ry="4" fill="#f39eac" opacity=".7"/><ellipse cx="168" cy="139" rx="9" ry="4" fill="#f39eac" opacity=".7"/>
+ <!-- little dragon wings -->
+ <path d="M74 204q-31-31-35 1 12-5 14 13 10-11 22 4M187 204q31-31 35 1-12-5-14 13-10-11-22 4" fill="#e8caff" stroke="#9a7ad0" stroke-width="3" stroke-linejoin="round"/>
+ <path d="M130 33q-11-13 0-22 11 9 0 22" fill="#ff9ecb" stroke="#ca6d9d" stroke-width="2"/>
+</svg><div class="bubble" id="dragonBubble">嗨～要和我聊聊天吗？</div><button class="poke" type="button" data-poke="dragon">戳戳龙娘 ✨</button></section>
+</div>
+<section class="chat"><div class="messages" id="messages"><div class="msg bot">大肥鱼和龙娘都在这里陪你！</div></div><form class="row" id="chat"><input id="message" maxlength="2000" placeholder="和桌宠们说点什么…" autocomplete="off"><button>发送</button></form></section></main>
+<div class="login" id="login"><form id="loginForm"><h2>桌宠在等你</h2><div>输入网页访问口令</div><input id="password" type="password" maxlength="256" required><button>进入</button><div class="error" id="error"></div></form></div>
 <script>
-const login=document.querySelector('#login'),fish=document.querySelector('#fish'),bubble=document.querySelector('#bubble'),messages=document.querySelector('#messages');
+const login=document.querySelector('#login'),messages=document.querySelector('#messages');
 async function check(){let r=await fetch('/api/pet/session');login.hidden=r.ok}
 function add(text,who){let d=document.createElement('div');d.className='msg '+who;d.textContent=text;messages.append(d);messages.scrollTop=messages.scrollHeight;return d}
 document.querySelector('#loginForm').onsubmit=async e=>{e.preventDefault();let r=await fetch('/api/pet/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:document.querySelector('#password').value})});let data=await r.json().catch(()=>({}));if(r.ok){login.hidden=true;document.querySelector('#error').textContent=''}else document.querySelector('#error').textContent=data.detail||`登录失败（HTTP ${r.status}）`};
-document.querySelector('#chat').onsubmit=async e=>{e.preventDefault();let input=document.querySelector('#message'),text=input.value.trim();if(!text)return;input.value='';add(text,'user');fish.classList.add('think');bubble.textContent='大肥鱼正在思考…';let b=add('…','bot');document.querySelector('button').disabled=true;try{let r=await fetch('/api/pet/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});let data=await r.json();if(r.status===401){login.hidden=false;b.textContent='请先登录';return}b.textContent=data.answer||data.detail||'暂时没有回复';for(let url of data.images||[]){let a=document.createElement('a');a.href=url;a.textContent='查看生成的图片';a.target='_blank';b.append(document.createElement('br'),a)}bubble.textContent='我在听！'}catch{b.textContent='连接失败，请稍后再试'}finally{fish.classList.remove('think');document.querySelector('button').disabled=false}};
-fish.onclick=()=>{bubble.textContent='咕噜咕噜～';setTimeout(()=>bubble.textContent='点点我，陪我聊聊天吧！',1400)};check();
+const pets={fish:{el:document.querySelector('#fish'),bubble:document.querySelector('#fishBubble'),lines:['喂！戳本鱼做什么～','咕噜咕噜，好痒！','大肥鱼弹起来啦！']},dragon:{el:document.querySelector('#dragon'),bubble:document.querySelector('#dragonBubble'),lines:['呀！被你戳到了～','嘿嘿，再戳一下嘛！','我有感觉的哦 ✨']}};
+for(const [name,p] of Object.entries(pets)){let count=0;function poke(){count++;p.el.classList.remove('poked');void p.el.getBoundingClientRect();p.el.classList.add('poked');p.bubble.textContent=p.lines[(count-1)%p.lines.length];setTimeout(()=>p.el.classList.remove('poked'),500)}p.el.onclick=poke;document.querySelector(`[data-poke="${name}"]`).onclick=poke}
+document.querySelector('#chat').onsubmit=async e=>{e.preventDefault();let input=document.querySelector('#message'),text=input.value.trim();if(!text)return;input.value='';add(text,'user');for(const p of Object.values(pets)){p.el.classList.add('think');p.bubble.textContent='正在思考…'}let b=add('…','bot');let send=document.querySelector('#chat button');send.disabled=true;try{let r=await fetch('/api/pet/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:text})});let data=await r.json();if(r.status===401){login.hidden=false;b.textContent='请先登录';return}b.textContent=data.answer||data.detail||'暂时没有回复';for(let url of data.images||[]){let a=document.createElement('a');a.href=url;a.textContent='查看生成的图片';a.target='_blank';b.append(document.createElement('br'),a)}for(const p of Object.values(pets)){p.bubble.textContent='我们在听！';p.el.classList.remove('think');p.el.classList.add('talk');setTimeout(()=>p.el.classList.remove('talk'),1800)}}catch{b.textContent='连接失败，请稍后再试'}finally{for(const p of Object.values(pets))p.el.classList.remove('think');send.disabled=false}};
+check();
 </script></body></html>
