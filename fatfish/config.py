@@ -37,6 +37,10 @@ class BotSettings(BaseSettings):
     wechat_ack_text: str = "收到，正在想…"
     wechat_port: int = 80
 
+    # 网页桌宠：设置访问口令后才启用页面与 API
+    web_password: str = ""
+    web_session_secret: str = ""
+
     # ---- 生图 ----
     # siliconflow（Kwai-Kolors）/ zhipu（CogView）。换家只改这里和 key
     image_provider: str = "zhipu"
