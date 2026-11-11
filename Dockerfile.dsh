@@ -1,5 +1,9 @@
 FROM node:24-bookworm-slim
 
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y libstdc++6 \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN npm install --global --registry=https://registry.npmmirror.com \
     --allow-scripts=pnpm,@deepseek-ai/dsh-subprocess-local,koffi,node-pty,@google/genai,protobufjs \
     pnpm @deepseek-ai/dsh@0.2.2-rc.1 node-addon-require-builtin-linux-x64-gnu@0.1.9
