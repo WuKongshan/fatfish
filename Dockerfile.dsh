@@ -1,7 +1,6 @@
 FROM node:24-bookworm-slim
 
-RUN npm config set registry https://registry.npmmirror.com
-RUN npm install --global \
+RUN npm install --global --registry=https://registry.npmjs.org \
     --allow-scripts=pnpm,@deepseek-ai/dsh-subprocess-local,koffi,node-pty,@google/genai,protobufjs \
     pnpm @deepseek-ai/dsh@0.2.2-rc.1 node-addon-require-builtin-linux-x64-gnu@0.1.9
 
