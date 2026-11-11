@@ -9,9 +9,8 @@ services:
     environment:
       # 日志时间戳用本地时间，排查时不用心算 +8
       TZ: Asia/Shanghai
-    ports:
-      # 只有用微信时才需要；只用 QQ 可以注释掉
-      - "80:80"
+    expose:
+      - "80"
     volumes:
       # 提醒存在 SQLite 里，不挂出来重建容器就丢
       - ./bot-data:/app/data
@@ -21,3 +20,65 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+
+  dsh-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dsh
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      TZ: Asia/Shanghai
+      DSH_HOME: /home/node/.dsh
+      DSH_PUBLIC_URL: https://${PUBLIC_IP:-43.138.189.204}
+      DSH_TRUSTED_HOST: ${PUBLIC_IP:-43.138.189.204}
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY}
+    expose:
+      - "3080"
+    volumes:
+      - dsh-data:/home/node/.dsh
+      - dsh-workspace:/workspace
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    tmpfs:
+      - /tmp
+    mem_limit: 900m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  caddy:
+    image: caddy:2.11.9-alpine
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      PUBLIC_IP: ${PUBLIC_IP:-43.138.189.204}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      - bot
+      - dsh-web
+    mem_limit: 128m
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  dsh-data:
+  dsh-workspace:
+  caddy-data:
+  caddy-config:

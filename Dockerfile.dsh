@@ -1,0 +1,18 @@
+FROM node:24-bookworm-slim
+
+RUN npm install --global \
+    --allow-scripts=pnpm,@deepseek-ai/dsh-subprocess-local,koffi,node-pty,@google/genai,protobufjs \
+    pnpm @deepseek-ai/dsh@0.2.2-rc.1
+
+COPY docker/dsh-entrypoint.sh /usr/local/bin/dsh-entrypoint
+RUN chmod +x /usr/local/bin/dsh-entrypoint \
+    && mkdir -p /home/node/.dsh /workspace \
+    && chown -R node:node /home/node/.dsh /workspace
+
+ENV DSH_HOME=/home/node/.dsh
+USER node
+WORKDIR /workspace
+VOLUME ["/home/node/.dsh", "/workspace"]
+EXPOSE 3080
+
+ENTRYPOINT ["/usr/local/bin/dsh-entrypoint"]

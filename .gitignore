@@ -7,3 +7,6 @@
 __pycache__/
 bot-data/
 data/
+
+# Local Android test APKs
+/artifacts/android/*.apk

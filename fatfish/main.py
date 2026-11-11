@@ -19,8 +19,6 @@ from fatfish.deepseek import ChatMemory
 from fatfish.push import PushRouter
 from fatfish.qq import QQBot
 from fatfish.store import ReminderStore
-from fatfish.web import init_web
-from fatfish.web import router as web_router
 from fatfish.wechat import router as wechat_router
 
 
@@ -29,7 +27,6 @@ async def serve_http() -> None:
     settings = get_settings()
     app = FastAPI(title="fatfish", docs_url=None, redoc_url=None)
     app.include_router(wechat_router)
-    app.include_router(web_router)
     # access_log=False：80 端口暴露在公网，每天有大量扫描器请求 / 和 /favicon.ico，
     # 访问日志会把真正的业务日志冲掉。微信的请求我们自己打了 "收到微信消息"，
     # 排查时看那行就够
@@ -51,7 +48,6 @@ async def serve() -> None:
 
     store = ReminderStore(settings.reminder_db)
     tools.init_store(store)
-    init_web(store)
 
     bot = QQBot(ChatMemory(settings.history_turns))
     # 调度器通过 router 发消息，QQ 和微信走不同通道

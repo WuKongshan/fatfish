@@ -1,0 +1,28 @@
+{
+	auto_https disable_redirects
+}
+
+http://{$PUBLIC_IP} {
+	@wechat path /wechat /wechat/*
+	handle @wechat {
+		reverse_proxy bot:80
+	}
+	handle {
+		redir https://{$PUBLIC_IP}{uri} permanent
+	}
+}
+
+https://{$PUBLIC_IP} {
+	tls {
+		issuer acme {
+			profile shortlived
+		}
+	}
+	@wechat path /wechat /wechat/*
+	handle @wechat {
+		reverse_proxy bot:80
+	}
+	handle {
+		reverse_proxy dsh-web:3080
+	}
+}
