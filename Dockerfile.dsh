@@ -3,7 +3,7 @@ FROM node:24-bookworm-slim
 RUN npm config set registry https://registry.npmmirror.com
 RUN npm install --global \
     --allow-scripts=pnpm,@deepseek-ai/dsh-subprocess-local,koffi,node-pty,@google/genai,protobufjs \
-    pnpm @deepseek-ai/dsh@0.2.2-rc.1
+    pnpm @deepseek-ai/dsh@0.2.2-rc.1 node-addon-require-builtin-linux-x64-gnu@0.1.9
 
 COPY docker/dsh-entrypoint.sh /usr/local/bin/dsh-entrypoint
 RUN chmod +x /usr/local/bin/dsh-entrypoint \
