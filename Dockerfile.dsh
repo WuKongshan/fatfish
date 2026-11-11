@@ -1,8 +1,13 @@
 FROM node:24-bookworm-slim
 
-RUN npm install --global --registry=https://registry.npmjs.org \
+RUN npm install --global --registry=https://registry.npmmirror.com \
     --allow-scripts=pnpm,@deepseek-ai/dsh-subprocess-local,koffi,node-pty,@google/genai,protobufjs \
     pnpm @deepseek-ai/dsh@0.2.2-rc.1 node-addon-require-builtin-linux-x64-gnu@0.1.9
+
+# Refresh the platform binary from npmjs: some mirrors sync the package metadata
+# but omit the optional prebuilt .node file required by DSH at startup.
+RUN npm uninstall --global node-addon-require-builtin-linux-x64-gnu \
+    && npm install --global --registry=https://registry.npmjs.org node-addon-require-builtin-linux-x64-gnu@0.1.9
 
 COPY docker/dsh-entrypoint.sh /usr/local/bin/dsh-entrypoint
 RUN chmod +x /usr/local/bin/dsh-entrypoint \
