@@ -17,6 +17,7 @@ RUN chmod +x /usr/local/bin/dsh-entrypoint \
 
 ENV DSH_HOME=/home/node/.dsh
 USER node
+RUN node -e "const d=require('/usr/local/lib/node_modules/@deepseek-ai/dsh/node_modules/node-addon-require-builtin'); d.requireBuiltin('internal/modules/esm/loader'); console.log('DSH native binding OK')"
 WORKDIR /workspace
 VOLUME ["/home/node/.dsh", "/workspace"]
 EXPOSE 3080
