@@ -29,6 +29,13 @@ https://{$PUBLIC_IP} {
 		reverse_proxy bot:80
 	}
 	handle {
+		# 桌宠是单用户设计：谁进来谁就是管理员（能改模型、烧额度）。
+		# 所以门口必须有一道密码，和 URL 里的 token 形成两层。
+		# 用户名默认 dafeiyu，密码哈希写在 .env 的 DSH_PASSWORD_HASH 里，
+		# 不把它写进仓库。
+		basic_auth {
+			{$DSH_USER:dafeiyu} {$DSH_PASSWORD_HASH}
+		}
 		reverse_proxy dsh-web:3080
 	}
 }
