@@ -1,5 +1,11 @@
 {
 	auto_https disable_redirects
+
+	# 裸 IP 访问时，绝大多数客户端不发 SNI（Windows schannel、Chrome、curl 对 IP 字面量
+	# 都不发，RFC 6066 也只允许放域名）。Caddy 拿不到 SNI 就无法按主机名选站点，
+	# 会直接回 fatal alert，浏览器报 ERR_SSL_PROTOCOL_ERROR。
+	# 指定兜底 SNI，让无 SNI 的连接也能落到本站点。
+	fallback_sni {$PUBLIC_IP}
 }
 
 http://{$PUBLIC_IP} {
