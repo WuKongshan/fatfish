@@ -7,7 +7,8 @@ if [ ! -e "$profile_dir/node_modules/dsh-pet" ]; then
 fi
 
 bind_ip="$(hostname -i | cut -d ' ' -f 1)"
-exec dsh --profile web \
+exec node --expose-internals "$(npm root --global)/@deepseek-ai/dsh/lib/bin.js" \
+    --profile web \
     --no-open \
     --host "$bind_ip" \
     --port 3080 \
