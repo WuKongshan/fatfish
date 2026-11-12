@@ -44,7 +44,10 @@ services:
     cap_drop:
       - ALL
     tmpfs:
-      - /tmp
+      # DSH 的原生加载器会把 .node 复制到 os.tmpdir() 再 dlopen，
+      # 而 tmpfs 默认带 noexec，mmap(PROT_EXEC) 会被内核拒绝（failed to map segment）。
+      # 所以这里必须显式带 exec；nosuid/nodev/size 限制保留，不要改成 noexec。
+      - /tmp:rw,exec,nosuid,nodev,size=512m
     mem_limit: 900m
     logging:
       driver: json-file
